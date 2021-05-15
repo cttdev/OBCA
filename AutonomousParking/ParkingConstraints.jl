@@ -44,7 +44,7 @@ function ParkingConstraints(x0,xF,N,Ts,L,ego,XYbounds,nOb,vOb, A, b,x,u,l,n,time
 
 	c0[1] = maximum(abs.(u[1,:]))-0.6	# should be <= 0
 	c0[2] = maximum(abs.(u[2,:]))-0.4	# should be <= 0
-	c0[3] = maximum(abs.(timeScale-1))-0.2 # should be <= 0
+	c0[3] = maximum(abs.(timeScale.-1))-0.2 # should be <= 0
 	c0[4] = -minimum(l)	# should be <= 0
 	c0[5] = -minimum(n)	# should be <= 0
 

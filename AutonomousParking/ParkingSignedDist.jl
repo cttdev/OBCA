@@ -213,18 +213,18 @@ function ParkingSignedDist(x0,xF,N,Ts,L,ego,XYbounds,nOb,vOb, A, b,rx,ry,ryaw,fi
 	if fixTime == 0
 		setvalue(timeScale,1*ones(N+1,1))
 	end
-	local adjx = adjoint(xWS)
+	adjx = adjoint(xWS)
 	setvalue(x,copy(adjx))
 	
-	local adju = adjoint(uWS[1:N,:])
+	adju = adjoint(uWS[1:N,:])
 	setvalue(u,copy(adju))
 
 	lWS,nWS = DualMultWS(N,nOb,vOb, A, b,rx,ry,ryaw)
 
-	local adjl = adjoint(lWS)
+	adjl = adjoint(lWS)
 	setvalue(l,copy(adjl))
 	
-	local adjn = adjoint(nWS)
+	adjn = adjoint(nWS)
 	setvalue(n,copy(adjn))
 
 
@@ -242,9 +242,9 @@ function ParkingSignedDist(x0,xF,N,Ts,L,ego,XYbounds,nOb,vOb, A, b,rx,ry,ryaw,fi
 
 	exitflag = 0
 
-	tic()
+	ts = time_ns()
 	status = solve(m; suppress_warnings=true)
-	time1 = toq();
+	time1 = round((time_ns() - ts) * 1e-9, digits=7);
 	
 	# tmp check
 	xp = getvalue(x)
@@ -264,9 +264,9 @@ function ParkingSignedDist(x0,xF,N,Ts,L,ego,XYbounds,nOb,vOb, A, b,rx,ry,ryaw,fi
 	elseif status ==:Error || status ==:UserLimit# || status ==:Infeasible
 		Feasible = 0
 		if Feasible == 0
-		    tic()
+		    ts = time_ns()
 		    status = solve(m; suppress_warnings=true)
-		    time2 = toq();
+		    time2 = round((time_ns() - ts) * 1e-9, digits=7);
 
 		    if status == :Optimal
 		        exitflag = 1

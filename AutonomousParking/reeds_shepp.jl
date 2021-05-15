@@ -139,7 +139,7 @@ end
 
 function polar(x::Float64, y::Float64)
     r = sqrt(x^2+y^2)
-    theta = atan2(y, x)
+    theta = atan(y, x)
     return r, theta
 end
 
@@ -175,7 +175,7 @@ function LSR(x::Float64, y::Float64, phi::Float64)
     u1 = u1^2;
     if u1 >= 4.0
         u = sqrt(u1 - 4.0)
-        theta = atan2(2.0, u)
+        theta = atan(2.0, u)
         t = mod2pi(t1 + theta)
         v = mod2pi(t - phi)
 
@@ -374,7 +374,7 @@ function calc_tauOmega(u::Float64, v::Float64, xi::Float64, eta::Float64, phi::F
     A = sin(u) - sin(delta)
     B = cos(u) - cos(delta) - 1.0
 
-    t1 = atan2(eta*A - xi*B, xi*A + eta*B)
+    t1 = atan(eta*A - xi*B, xi*A + eta*B)
     t2 = 2.0 * (cos(delta) - cos(v) - cos(u)) + 3.0;
 
     if t2 < 0
@@ -506,7 +506,7 @@ function LRSL(x::Float64, y::Float64, phi::Float64)
     if rho >= 2.0
         r = sqrt(rho*rho - 4.0);
         u = 2.0 - r;
-        t = mod2pi(theta + atan2(r, -2.0));
+        t = mod2pi(theta + atan(r, -2.0));
         v = mod2pi(phi - 0.5*pi - t);
         if t >= 0.0 && u<=0.0 && v<=0.0
             return true, t, u, v
@@ -630,7 +630,7 @@ function LRSLR(x::Float64, y::Float64, phi::Float64)
     if rho >= 2.0
         u = 4.0 - sqrt(rho*rho - 4.0)
         if u <= 0.0
-            t = mod2pi(atan2((4.0-u)*xi -2.0*eta, -2.0*xi + (u-4.0)*eta));
+            t = mod2pi(atan((4.0-u)*xi -2.0*eta, -2.0*xi + (u-4.0)*eta));
             v = mod2pi(t - phi);
 
             if t >= 0.0 && v >=0.0

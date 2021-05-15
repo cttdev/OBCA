@@ -265,7 +265,7 @@ function calc_obstacle_map(ox::Array{Float64}, oy::Array{Float64}, reso::Float64
 
     obmap = fill(false, (xwidth,ywidth))
 
-    local adj = adjoint(hcat(ox, oy))
+    adj = adjoint(hcat(ox, oy))
     kdtree = KDTree(copy(adj))
     for ix in 1:xwidth 
         x = ix + minx

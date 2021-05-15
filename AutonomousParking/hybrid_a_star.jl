@@ -121,7 +121,7 @@ function calc_hybrid_astar_path(sx::Float64, sy::Float64, syaw::Float64,
     syaw, gyaw = pi_2_pi(syaw), pi_2_pi(gyaw)
 
     local c = calc_config(ox, oy, xyreso, yawreso, obreso)
-    local adj = adjoint(hcat(ox, oy))
+    adj = adjoint(hcat(ox, oy))
     kdtree = KDTree(copy(adj))
 
     obmap, gkdtree = calc_obstacle_map(ox, oy, c)
@@ -136,7 +136,7 @@ function calc_hybrid_astar_path(sx::Float64, sy::Float64, syaw::Float64,
     if USE_NONHOLONOMIC_WITHOUT_OBSTACLE_HEURISTIC
         h_rs = calc_nonholonomic_without_obstacle_heuristic(ngoal, c)
     else
-        h_rs = Array{Float64}()
+        h_rs = Array{Float64}(undef)
     end
 
     open, closed = Dict{Int64, Node}(), Dict{Int64, Node}()
@@ -489,7 +489,7 @@ function calc_obstacle_map(ox::Array{Float64},
 
     obmap = fill(false, (c.obxw, c.obyw))
 
-    local adj = adjoint(hcat(ox, oy))
+    adj = adjoint(hcat(ox, oy))
     gkdtree = KDTree(copy(adj))
     for ix in 1:c.obxw 
         x = ix + c.obminx

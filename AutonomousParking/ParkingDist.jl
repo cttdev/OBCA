@@ -215,18 +215,18 @@ function ParkingDist(x0,xF,N,Ts,L,ego,XYbounds,nOb,vOb, A, b,rx,ry,ryaw,fixTime,
 	if fixTime == 0
 		setvalue(timeScale,1*ones(N+1,1))
 	end
-	local adjx = adjoint(xWS)
+	adjx = adjoint(xWS)
 	setvalue(x,copy(adjx))
 	
-	local adju = adjoint(uWS[1:N,:])
+	adju = adjoint(uWS[1:N,:])
 	setvalue(u,copy(adju))
 
 	lWS,nWS = DualMultWS(N,nOb,vOb, A, b,rx,ry,ryaw)
 
-	local adjl = adjoint(lWS)
+	adjl = adjoint(lWS)
 	setvalue(l,copy(adjl))
 	
-	local adjn = adjoint(nWS)
+	adjn = adjoint(nWS)
 	setvalue(n,copy(adjn))
 
 	##############################
@@ -243,9 +243,9 @@ function ParkingDist(x0,xF,N,Ts,L,ego,XYbounds,nOb,vOb, A, b,rx,ry,ryaw,fixTime,
 
 	exitflag = 0
 
-	tic()
+	ts = time_ns()
 	status = solve(m; suppress_warnings=true)
-	time1 = toq();
+	time1 = round((time_ns() - ts) * 1e-9, digits=7);
 
 	# we allow for two resolving attempts if restoration error
 	if status == :Optimal
@@ -264,9 +264,9 @@ function ParkingDist(x0,xF,N,Ts,L,ego,XYbounds,nOb,vOb, A, b,rx,ry,ryaw,fixTime,
 		Feasible = 0
 		Feasible = ParkingConstraints(x0,xF,N,Ts,L,ego,XYbounds,nOb,vOb, A, b,xp,up,lp,np,timeScalep,fixTime,0)
 		if Feasible == 0
-		    tic()
+		    ts = time_ns()
 		    status = solve(m; suppress_warnings=true)
-		    time2 = toq();
+		    time2 = round((time_ns() - ts) * 1e-9, digits=7);
 		    if status == :Optimal
 		        exitflag = 1
 		    elseif status ==:Error || status ==:UserLimit

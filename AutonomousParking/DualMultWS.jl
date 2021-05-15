@@ -73,9 +73,9 @@ function DualMultWS(N,nOb,vOb, A, b,rx,ry,ryaw)
 							+ (x[2,i]+sin(x[3,i])*offset)*sum(Aj[k,2]*lj[k,i] for k=1:vOb[j]) - sum(bj[k]*lj[k,i] for k=1:vOb[j]))
 		end
 	end
-	tic()
+	ts = time_ns()
 	solve(m)
-	time = toq();
+	time = round((time_ns() - ts) * 1e-9, digits=7);
 	# print("Auxillery Problem time = ",time,"\n")
 
 	lp = getvalue(l)'

@@ -211,9 +211,9 @@ XYbounds =  [ -15   , 15      ,  1      ,  10       ]	# constraints are on (X,Y)
 x0 = [-6  9.5   0.0    0.0]
 
 # call Hybrid A*
-tic()
+ts = time_ns()
 rx, ry, ryaw = hybrid_a_star.calc_hybrid_astar_path(x0[1], x0[2], x0[3], xF[1], xF[2], xF[3], ox, oy, hybrid_a_star.XY_GRID_RESOLUTION, hybrid_a_star.YAW_GRID_RESOLUTION, hybrid_a_star.OB_MAP_RESOLUTION)
-timeHybAstar = toq();
+timeHybAstar = round((time_ns() - ts) * 1e-9, digits=7);
 
 
 ### extract (smooth) velocity profile from Hybrid A* solution ####
