@@ -66,7 +66,7 @@ const H_COST = 1. # Heuristic cost; higher -> heuristic; 1.0
 const WB = 2.7 #[m]; 7.0
 const MAX_STEER = 0.6#deg2rad(35.0) #[rad]
 
-type Node
+mutable struct Node
     xind::Int64 #x index
     yind::Int64 #y index
     yawind::Int64 #yaw index
@@ -79,7 +79,7 @@ type Node
     pind::Int64 # parent index
 end
 
-type Config
+mutable struct Config
     minx::Int64
     miny::Int64
     minyaw::Int64
@@ -120,8 +120,10 @@ function calc_hybrid_astar_path(sx::Float64, sy::Float64, syaw::Float64,
 
     syaw, gyaw = pi_2_pi(syaw), pi_2_pi(gyaw)
 
-    const c = calc_config(ox, oy, xyreso, yawreso, obreso)
-    kdtree = KDTree(hcat(ox, oy)')
+    local c = calc_config(ox, oy, xyreso, yawreso, obreso)
+    local adj = adjoint(hcat(ox, oy))
+    kdtree = KDTree(copy(adj))
+
     obmap, gkdtree = calc_obstacle_map(ox, oy, c)
     nstart = Node(round(Int64,sx/xyreso), round(Int64,sy/xyreso), round(Int64, syaw/yawreso),true,[sx],[sy],[syaw],0.0,0.0, -1)
     ngoal = Node(round(Int64,gx/xyreso), round(Int64,gy/xyreso), round(Int64,gyaw/yawreso),true,[gx],[gy],[gyaw],0.0,0.0, -1)
@@ -200,7 +202,7 @@ function update_node_with_analystic_expantion(current::Node,
                                             )
 
     apath = analystic_expantion(current, ngoal, obmap, c, kdtree, ox, oy)
-    if apath != nothing
+    if apath !== nothing
         # println("Find path! with analystic_expantion")
         current.x = vcat(current.x, apath.x[2:end-1])
         current.y = vcat(current.y, apath.y[2:end-1])
@@ -274,7 +276,7 @@ function analystic_expantion(n::Node, ngoal::Node, obmap::Array{Bool,2}, c::Conf
                                            ngoal.x[end], ngoal.y[end], ngoal.yaw[end],
                                            max_curvature, step_size=MOTION_RESOLUTION)
 
-    if path == nothing
+    if path === nothing
         return nothing
     end
 
@@ -487,7 +489,8 @@ function calc_obstacle_map(ox::Array{Float64},
 
     obmap = fill(false, (c.obxw, c.obyw))
 
-    gkdtree = KDTree(hcat(ox, oy)')
+    local adj = adjoint(hcat(ox, oy))
+    gkdtree = KDTree(copy(adj))
     for ix in 1:c.obxw 
         x = ix + c.obminx
         for iy in 1:c.obyw 
@@ -614,7 +617,7 @@ function main()
     @time rx, ry, ryaw = calc_hybrid_astar_path(sx, sy, syaw, gx, gy, gyaw, ox, oy, XY_GRID_RESOLUTION, YAW_GRID_RESOLUTION, OB_MAP_RESOLUTION)
 
     plot(ox, oy, ".k",label="obstacles")
-    if rx != nothing
+    if rx !== nothing
         plot(rx, ry, "-r",label="Hybrid A* path")
     end
  

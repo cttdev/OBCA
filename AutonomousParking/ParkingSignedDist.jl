@@ -213,13 +213,19 @@ function ParkingSignedDist(x0,xF,N,Ts,L,ego,XYbounds,nOb,vOb, A, b,rx,ry,ryaw,fi
 	if fixTime == 0
 		setvalue(timeScale,1*ones(N+1,1))
 	end
-	setvalue(x,xWS')
-	setvalue(u,uWS[1:N,:]')
+	local adjx = adjoint(xWS)
+	setvalue(x,copy(adjx))
+	
+	local adju = adjoint(uWS[1:N,:])
+	setvalue(u,copy(adju))
 
 	lWS,nWS = DualMultWS(N,nOb,vOb, A, b,rx,ry,ryaw)
 
-	setvalue(l,lWS')
-	setvalue(n,nWS')
+	local adjl = adjoint(lWS)
+	setvalue(l,copy(adjl))
+	
+	local adjn = adjoint(nWS)
+	setvalue(n,copy(adjn))
 
 
 	##############################

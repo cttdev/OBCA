@@ -25,8 +25,6 @@
 # Main file: computes Collision-Free and Minimum-Penetration trajectories for parking
 ###############
 
-# function defined in setup.jl
-clear()
 using PyCall
 close("all")
 
@@ -98,7 +96,7 @@ if scenario == "backwards"
 	# obstacles for optimization problem
 	nOb =  3 	# number of obstacles 
 	vOb = [3 3 2]	# number of vertices of each obstacle, vector of dimenion nOb
-	vObMPC = vOb-1
+	vObMPC = vOb.-1
 	lOb = [   [ [-20;5], [-1.3;5], [-1.3;-5]]  , 
 	 	  [ [1.3;-5] , [1.3;5] , [20;5] ] , 
 		  [ [20;11], [-20;11]]	]		#vetices given in CLOCK-WISE direction
@@ -150,7 +148,7 @@ elseif scenario == "parallel"
   	# define obstacles for optimization problem
 	nOb =  4 	# number of obstacles 
 	vOb = [3 3 2 2]	# number of vertices of each obstacle, vector of dimenion nOb
-	vObMPC = vOb-1
+	vObMPC = vOb.-1
   	lOb = [   [ [-20;5], [-3.;5], [-3.;0]]  , 
 	 	  [ [3.;0] , [3.;5] , [20;5] ] , 
 		  [ [-3;2.5], [ 3;2.5]]	,
@@ -230,7 +228,7 @@ end
 ### Smoothen velocity 0.3 m/s^2 max acceleration ###
 v,a = veloSmooth(rv,0.3,Ts/sampleN)
 ### compute steering angle ###
-delta = atan(diff(ryaw)*L/motionStep.*sign(v[1:end-1]));
+delta = atan.(diff(ryaw)*L/motionStep.*sign.(v[1:end-1]));
 
 
 ### Down-sample for Warmstart ##########

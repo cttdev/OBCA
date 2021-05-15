@@ -31,10 +31,11 @@
 module reeds_shepp
 
 using PyPlot
+using Test
 
 const STEP_SIZE = 0.1
 
-type Path
+mutable struct Path
     lengths::Array{Float64} #lengths of each part of the path +: forward, -: backward
     ctypes::Array{String} # type of each part of the path
     L::Float64 # total path length
@@ -222,7 +223,7 @@ function set_path(paths::Array{Path}, lengths::Array{Float64}, ctypes::Array{Str
 
     path.L = sum([abs(i) for i in lengths])
 
-    Base.Test.@test path.L >= 0.01
+    @test path.L >= 0.01
 
     push!(paths, path)
 
@@ -848,21 +849,21 @@ function check_path(start_x, start_y, start_yaw, end_x, end_y, end_yaw, max_curv
     # println(start_x,",", start_y, "," ,start_yaw, ",", max_curvature)
     paths = calc_paths(start_x, start_y, start_yaw, end_x, end_y, end_yaw, max_curvature)
 
-    Base.Test.@test length(paths) >= 1
+    @test length(paths) >= 1
 
     for path in paths
-        Base.Test.@test abs(path.x[1] - start_x) <= 0.01
-        Base.Test.@test abs(path.y[1] - start_y) <= 0.01
-        Base.Test.@test abs(path.yaw[1] - start_yaw) <= 0.01
-        Base.Test.@test abs(path.x[end] - end_x) <= 0.01
-        Base.Test.@test abs(path.y[end] - end_y) <= 0.01
-        Base.Test.@test abs(path.yaw[end] - end_yaw) <= 0.01
+        @test abs(path.x[1] - start_x) <= 0.01
+        @test abs(path.y[1] - start_y) <= 0.01
+        @test abs(path.yaw[1] - start_yaw) <= 0.01
+        @test abs(path.x[end] - end_x) <= 0.01
+        @test abs(path.y[end] - end_y) <= 0.01
+        @test abs(path.yaw[end] - end_yaw) <= 0.01
 
         #course distance check
         d = [sqrt(dx^2+dy^2) for (dx, dy) in zip(diff(path.x[1:end-1]), diff(path.y[1:end-1]))] 
 
         for i in length(d)
-            Base.Test.@test abs(d[i] - STEP_SIZE) <= 0.001
+            @test abs(d[i] - STEP_SIZE) <= 0.001
         end
     end
 

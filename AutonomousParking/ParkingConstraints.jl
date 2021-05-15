@@ -42,9 +42,9 @@ function ParkingConstraints(x0,xF,N,Ts,L,ego,XYbounds,nOb,vOb, A, b,x,u,l,n,time
 
 	e = zeros(7,1)
 
-	c0[1] = maximum(abs(u[1,:]))-0.6	# should be <= 0
-	c0[2] = maximum(abs(u[2,:]))-0.4	# should be <= 0
-	c0[3] = maximum(abs(timeScale-1))-0.2 # should be <= 0
+	c0[1] = maximum(abs.(u[1,:]))-0.6	# should be <= 0
+	c0[2] = maximum(abs.(u[2,:]))-0.4	# should be <= 0
+	c0[3] = maximum(abs.(timeScale-1))-0.2 # should be <= 0
 	c0[4] = -minimum(l)	# should be <= 0
 	c0[5] = -minimum(n)	# should be <= 0
 
@@ -83,11 +83,11 @@ function ParkingConstraints(x0,xF,N,Ts,L,ego,XYbounds,nOb,vOb, A, b,x,u,l,n,time
 	u0 = [0,0]
 
 	if fixTime == 1
-		c5 = maximum(abs(diff([0. u[1,:]']'))/Ts) - 0.6
+		c5 = maximum(abs.(diff([0. u[1,:]']'))/Ts) - 0.6
 		c4 = 0
 	else
-		c4 = maximum(abs(diff(timeScale)))
-		c5 = maximum(abs(diff([0 u[1,:]']'))/(timeScale[1]*Ts)) - 0.6
+		c4 = maximum(abs.(diff(timeScale)))
+		c5 = maximum(abs.(diff([0 u[1,:]']'))/(timeScale[1]*Ts)) - 0.6
 	end
 
 
@@ -133,7 +133,7 @@ function ParkingConstraints(x0,xF,N,Ts,L,ego,XYbounds,nOb,vOb, A, b,x,u,l,n,time
 	e[1] = maximum(c0)<= 5e-5
 	e[2] = maximum(c1)<= 5e-5
 	e[3] = maximum(c2)<= 5e-5
-	e[4] = maximum(abs(c3))<= 5e-5
+	e[4] = maximum(abs.(c3))<= 5e-5
 	e[5] = c4 <= 5e-5
 	e[6] = c5 <= 5e-5
 	e[7] = maximum(c6)<= 5e-5

@@ -36,7 +36,7 @@ const VEHICLE_RADIUS = 5.0 #[m]
 const GRID_RESOLUTION = 1.0 #[m]
 
 
-type Node
+mutable struct Node
     x::Int64 #x index
     y::Int64 #y index
     cost::Float64 # cost
@@ -265,7 +265,8 @@ function calc_obstacle_map(ox::Array{Float64}, oy::Array{Float64}, reso::Float64
 
     obmap = fill(false, (xwidth,ywidth))
 
-    kdtree = KDTree(hcat(ox, oy)')
+    local adj = adjoint(hcat(ox, oy))
+    kdtree = KDTree(copy(adj))
     for ix in 1:xwidth 
         x = ix + minx
         for iy in 1:ywidth 
