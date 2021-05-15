@@ -33,7 +33,7 @@ function DualMultWS(N,nOb,vOb, A, b,rx,ry,ryaw)
 	x[2,:] = ry
 	x[3,:] = ryaw
 
-	m = Model(solver=IpoptSolver(hessian_approximation="exact",mumps_pivtol=1e-5,
+	m = Model(with_optimizer(Ipopt.Optimizer,hessian_approximation="exact",mumps_pivtol=1e-5,
 	                             max_iter=100,tol=1e-5, print_level=0, suppress_all_output="yes"))
 
 	W_ev = ego[2]+ego[4]
@@ -74,12 +74,12 @@ function DualMultWS(N,nOb,vOb, A, b,rx,ry,ryaw)
 		end
 	end
 	ts = time_ns()
-	solve(m)
+	optimize!(m)
 	time = round((time_ns() - ts) * 1e-9, digits=7);
 	# print("Auxillery Problem time = ",time,"\n")
 
-	lp = getvalue(l)'
-	np = getvalue(n)'
+	lp = getvalue.(l)'
+	np = getvalue.(n)'
 
 	return lp,np
 
